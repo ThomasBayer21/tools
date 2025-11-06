@@ -1,0 +1,6 @@
+Weitere Ideen:
+- Widerstandswerte/Farbcodes
+- Raspberry Pi/Arduino/... Pinbelegungen
+- Spannungs-/Stromteiler und Vorwiderstandsberechnungen
+- Farbpaletten Generator für UX-Design
+- CookieClicker, idk, ...

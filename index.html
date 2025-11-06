@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tools</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #e4e4ec 0%, #d0d0dc 100%);
+            min-height: 100vh;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 2.2em;
+            font-weight: 600;
+        }
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .intro {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 35px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            line-height: 1.6;
+            color: #555;
+        }
+        .visualizations {
+            display: grid;
+            gap: 20px;
+        }
+        .viz-card {
+            background: #fafafa;
+            padding: 25px;
+            border-radius: 6px;
+            border-left: 4px solid #3498db;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        .viz-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+        }
+        .viz-card.systems {
+            border-left-color: #d4c8b8;
+        }
+        .viz-card.elementary {
+            border-left-color: #c4d8bc;
+        }
+        .viz-card.decibel {
+            border-left-color: #e0c8b8;
+        }
+        .viz-card.frequency {
+            border-left-color: #d4cce0;
+        }
+        .viz-card.operations {
+            border-left-color: #bcd8d4;
+        }
+        .viz-card.dsp {
+            border-left-color: #bcd4d4;
+        }
+        .viz-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .viz-subtitle {
+            font-size: 0.95em;
+            color: #7f8c8d;
+            margin-bottom: 12px;
+            font-style: italic;
+        }
+        .viz-description {
+            color: #555;
+            line-height: 1.6;
+            font-size: 0.95em;
+        }
+        .viz-count {
+            margin-top: 12px;
+            font-size: 0.9em;
+            color: #7f8c8d;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tools</h1>
+    <div class="subtitle">Interaktive Tools für nervige alltägliche Dinge</div>
+
+    <div class="container">
+        <div class="intro">
+            Diese Sammlung bietet interaktive Tools zu den nervigen Dingen im Alltag. 
+            Alle Tools sind direkt im Browser nutzbar.
+        </div>
+
+        <div class="visualizations">
+            <a href="pwm_calculator.html" class="viz-card systems">
+                <div class="viz-title">PWM</div>
+                <div class="viz-subtitle">Eigenschaften von PWM</div>
+                <div class="viz-description">
+                    Zum berechnen der PWM Timings für bestimmten Duty-Cycle und Frequenz
+                </div>
+                <div class="viz-count">1 Tool</div>
+            </a>
+        </div>
+    </div>
+</body>
+</html>
