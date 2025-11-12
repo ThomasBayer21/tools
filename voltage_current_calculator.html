@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spannungs- & Stromteiler Rechner</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(106, 177, 176, 0.15) 0%, rgba(106, 177, 176, 0.05) 100%);
+            min-height: 100vh;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #6ab1b0;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: #5a9fa0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 2.2em;
+            font-weight: 600;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .mode-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .mode-btn {
+            padding: 15px 20px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .mode-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .mode-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .calculator-section {
+            display: none;
+        }
+
+        .calculator-section.active {
+            display: block;
+        }
+
+        .diagram {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .diagram svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        input, select {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .result {
+            background: #f0f7ff;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            margin-top: 20px;
+        }
+
+        .result h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            padding: 8px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            color: #555;
+            font-weight: 500;
+        }
+
+        .result-value {
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .warning {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            color: #856404;
+            font-size: 0.9em;
+        }
+
+        .info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            color: #555;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+
+        .formula {
+            background: white;
+            padding: 10px;
+            border-radius: 6px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            color: #667eea;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-link">← Zurück zur Übersicht</a>
+    <h1>Spannungs- & Stromteiler Rechner</h1>
+    <div class="subtitle">Berechnungen für Teiler-Schaltungen und Vorwiderstände</div>
+
+    <div class="container">
+        <div class="mode-selector">
+            <button class="mode-btn active" onclick="setMode('voltage-divider')">Spannungsteiler</button>
+            <button class="mode-btn" onclick="setMode('current-divider')">Stromteiler</button>
+            <button class="mode-btn" onclick="setMode('led-resistor')">LED Vorwiderstand</button>
+        </div>
+
+        <!-- Spannungsteiler -->
+        <div id="voltage-divider" class="calculator-section active">
+            <div class="diagram">
+                <svg width="200" height="250" viewBox="0 0 200 250">
+                    <!-- Input voltage -->
+                    <text x="10" y="20" font-size="14" fill="#2c3e50" font-weight="bold">V_in</text>
+                    <line x1="40" y1="15" x2="100" y2="15" stroke="#2c3e50" stroke-width="2"/>
+
+                    <!-- R1 -->
+                    <line x1="100" y1="15" x2="100" y2="50" stroke="#2c3e50" stroke-width="2"/>
+                    <rect x="85" y="50" width="30" height="60" fill="none" stroke="#667eea" stroke-width="2" rx="3"/>
+                    <text x="105" y="85" font-size="12" fill="#667eea" text-anchor="middle" font-weight="bold">R1</text>
+
+                    <!-- Output voltage point -->
+                    <line x1="100" y1="110" x2="100" y2="130" stroke="#2c3e50" stroke-width="2"/>
+                    <circle cx="100" cy="130" r="4" fill="#e74c3c"/>
+                    <line x1="100" y1="130" x2="160" y2="130" stroke="#e74c3c" stroke-width="2"/>
+                    <text x="170" y="135" font-size="14" fill="#e74c3c" font-weight="bold">V_out</text>
+
+                    <!-- R2 -->
+                    <line x1="100" y1="130" x2="100" y2="150" stroke="#2c3e50" stroke-width="2"/>
+                    <rect x="85" y="150" width="30" height="60" fill="none" stroke="#27ae60" stroke-width="2" rx="3"/>
+                    <text x="105" y="185" font-size="12" fill="#27ae60" text-anchor="middle" font-weight="bold">R2</text>
+
+                    <!-- Ground -->
+                    <line x1="100" y1="210" x2="100" y2="230" stroke="#2c3e50" stroke-width="2"/>
+                    <line x1="80" y1="230" x2="120" y2="230" stroke="#2c3e50" stroke-width="3"/>
+                    <line x1="85" y1="235" x2="115" y2="235" stroke="#2c3e50" stroke-width="3"/>
+                    <line x1="90" y1="240" x2="110" y2="240" stroke="#2c3e50" stroke-width="3"/>
+                </svg>
+            </div>
+
+            <div class="formula">V_out = V_in × (R2 / (R1 + R2))</div>
+
+            <div class="input-grid">
+                <div class="input-group">
+                    <label for="vd-vin">Eingangsspannung V_in (V)</label>
+                    <input type="number" id="vd-vin" value="12" step="0.1" oninput="calculateVoltageDivider()">
+                </div>
+                <div class="input-group">
+                    <label for="vd-r1">Widerstand R1 (Ω)</label>
+                    <input type="number" id="vd-r1" value="1000" step="1" oninput="calculateVoltageDivider()">
+                </div>
+                <div class="input-group">
+                    <label for="vd-r2">Widerstand R2 (Ω)</label>
+                    <input type="number" id="vd-r2" value="1000" step="1" oninput="calculateVoltageDivider()">
+                </div>
+            </div>
+
+            <div class="result" id="vd-result"></div>
+            <div class="info">
+                <strong>Spannungsteiler:</strong> Teilt die Eingangsspannung proportional zu den Widerständen.
+                Wird häufig verwendet, um Spannungen zu reduzieren oder Referenzspannungen zu erzeugen.
+            </div>
+        </div>
+
+        <!-- Stromteiler -->
+        <div id="current-divider" class="calculator-section">
+            <div class="diagram">
+                <svg width="250" height="200" viewBox="0 0 250 200">
+                    <!-- Input current -->
+                    <text x="10" y="80" font-size="14" fill="#2c3e50" font-weight="bold">I_in</text>
+                    <line x1="40" y1="75" x2="70" y2="75" stroke="#2c3e50" stroke-width="2"/>
+                    <circle cx="70" cy="75" r="4" fill="#2c3e50"/>
+
+                    <!-- Branch 1 (R1) -->
+                    <line x1="70" y1="75" x2="70" y2="50" stroke="#2c3e50" stroke-width="2"/>
+                    <line x1="70" y1="50" x2="100" y2="50" stroke="#2c3e50" stroke-width="2"/>
+                    <rect x="100" y="35" width="60" height="30" fill="none" stroke="#667eea" stroke-width="2" rx="3"/>
+                    <text x="130" y="55" font-size="12" fill="#667eea" text-anchor="middle" font-weight="bold">R1</text>
+                    <line x1="160" y1="50" x2="190" y2="50" stroke="#2c3e50" stroke-width="2"/>
+                    <text x="200" y="55" font-size="12" fill="#667eea" font-weight="bold">I1</text>
+
+                    <!-- Branch 2 (R2) -->
+                    <line x1="70" y1="75" x2="70" y2="100" stroke="#2c3e50" stroke-width="2"/>
+                    <line x1="70" y1="100" x2="100" y2="100" stroke="#2c3e50" stroke-width="2"/>
+                    <rect x="100" y="85" width="60" height="30" fill="none" stroke="#27ae60" stroke-width="2" rx="3"/>
+                    <text x="130" y="105" font-size="12" fill="#27ae60" text-anchor="middle" font-weight="bold">R2</text>
+                    <line x1="160" y1="100" x2="190" y2="100" stroke="#2c3e50" stroke-width="2"/>
+                    <text x="200" y="105" font-size="12" fill="#27ae60" font-weight="bold">I2</text>
+
+                    <!-- Merge point -->
+                    <circle cx="190" cy="75" r="4" fill="#2c3e50"/>
+                    <line x1="190" y1="50" x2="190" y2="100" stroke="#2c3e50" stroke-width="2"/>
+                    <line x1="190" y1="75" x2="220" y2="75" stroke="#2c3e50" stroke-width="2"/>
+                </svg>
+            </div>
+
+            <div class="formula">I1 = I_in × (R2 / (R1 + R2))</div>
+            <div class="formula">I2 = I_in × (R1 / (R1 + R2))</div>
+
+            <div class="input-grid">
+                <div class="input-group">
+                    <label for="cd-iin">Eingangsstrom I_in (mA)</label>
+                    <input type="number" id="cd-iin" value="100" step="0.1" oninput="calculateCurrentDivider()">
+                </div>
+                <div class="input-group">
+                    <label for="cd-r1">Widerstand R1 (Ω)</label>
+                    <input type="number" id="cd-r1" value="1000" step="1" oninput="calculateCurrentDivider()">
+                </div>
+                <div class="input-group">
+                    <label for="cd-r2">Widerstand R2 (Ω)</label>
+                    <input type="number" id="cd-r2" value="1000" step="1" oninput="calculateCurrentDivider()">
+                </div>
+            </div>
+
+            <div class="result" id="cd-result"></div>
+            <div class="info">
+                <strong>Stromteiler:</strong> Teilt den Eingangsstrom umgekehrt proportional zu den Widerständen.
+                Der Strom fließt bevorzugt durch den kleineren Widerstand.
+            </div>
+        </div>
+
+        <!-- LED Vorwiderstand -->
+        <div id="led-resistor" class="calculator-section">
+            <div class="diagram">
+                <svg width="200" height="250" viewBox="0 0 200 250">
+                    <!-- Voltage source -->
+                    <text x="10" y="20" font-size="14" fill="#2c3e50" font-weight="bold">V_supply</text>
+                    <line x1="60" y1="15" x2="100" y2="15" stroke="#2c3e50" stroke-width="2"/>
+
+                    <!-- Resistor -->
+                    <line x1="100" y1="15" x2="100" y2="50" stroke="#2c3e50" stroke-width="2"/>
+                    <rect x="85" y="50" width="30" height="60" fill="none" stroke="#667eea" stroke-width="2" rx="3"/>
+                    <text x="105" y="85" font-size="12" fill="#667eea" text-anchor="middle" font-weight="bold">R</text>
+
+                    <!-- LED -->
+                    <line x1="100" y1="110" x2="100" y2="140" stroke="#2c3e50" stroke-width="2"/>
+                    <polygon points="85,140 115,140 100,170" fill="none" stroke="#e74c3c" stroke-width="2"/>
+                    <line x1="85" y1="170" x2="115" y2="170" stroke="#e74c3c" stroke-width="2"/>
+                    <text x="130" y="158" font-size="12" fill="#e74c3c" font-weight="bold">LED</text>
+
+                    <!-- Ground -->
+                    <line x1="100" y1="170" x2="100" y2="200" stroke="#2c3e50" stroke-width="2"/>
+                    <line x1="80" y1="200" x2="120" y2="200" stroke="#2c3e50" stroke-width="3"/>
+                    <line x1="85" y1="205" x2="115" y2="205" stroke="#2c3e50" stroke-width="3"/>
+                    <line x1="90" y1="210" x2="110" y2="210" stroke="#2c3e50" stroke-width="3"/>
+                </svg>
+            </div>
+
+            <div class="formula">R = (V_supply - V_LED) / I_LED</div>
+
+            <div class="input-grid">
+                <div class="input-group">
+                    <label for="led-vsupply">Versorgungsspannung (V)</label>
+                    <input type="number" id="led-vsupply" value="5" step="0.1" oninput="calculateLEDResistor()">
+                </div>
+                <div class="input-group">
+                    <label for="led-vled">LED Spannung V_F (V)</label>
+                    <input type="number" id="led-vled" value="2" step="0.1" oninput="calculateLEDResistor()">
+                </div>
+                <div class="input-group">
+                    <label for="led-current">LED Strom I_F (mA)</label>
+                    <input type="number" id="led-current" value="20" step="0.1" oninput="calculateLEDResistor()">
+                </div>
+                <div class="input-group">
+                    <label for="led-type">LED Typ (Voreinstellungen)</label>
+                    <select id="led-type" onchange="setLEDPreset()">
+                        <option value="custom">Benutzerdefiniert</option>
+                        <option value="red">Rot (2.0V, 20mA)</option>
+                        <option value="green">Grün (2.1V, 20mA)</option>
+                        <option value="blue">Blau (3.2V, 20mA)</option>
+                        <option value="white">Weiß (3.2V, 20mA)</option>
+                        <option value="yellow">Gelb (2.1V, 20mA)</option>
+                        <option value="infrared">Infrarot (1.5V, 20mA)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="result" id="led-result"></div>
+            <div class="info">
+                <strong>LED Vorwiderstand:</strong> Begrenzt den Strom durch die LED, um sie vor Überlastung zu schützen.
+                Die Werte für V_F und I_F findest du im Datenblatt deiner LED.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentMode = 'voltage-divider';
+
+        function setMode(mode) {
+            currentMode = mode;
+
+            // Update button states
+            document.querySelectorAll('.mode-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Update sections
+            document.querySelectorAll('.calculator-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(mode).classList.add('active');
+
+            // Calculate for the new mode
+            if (mode === 'voltage-divider') calculateVoltageDivider();
+            if (mode === 'current-divider') calculateCurrentDivider();
+            if (mode === 'led-resistor') calculateLEDResistor();
+        }
+
+        function calculateVoltageDivider() {
+            const vin = parseFloat(document.getElementById('vd-vin').value);
+            const r1 = parseFloat(document.getElementById('vd-r1').value);
+            const r2 = parseFloat(document.getElementById('vd-r2').value);
+
+            if (isNaN(vin) || isNaN(r1) || isNaN(r2) || r1 + r2 === 0) return;
+
+            const vout = vin * (r2 / (r1 + r2));
+            const current = vin / (r1 + r2);
+            const powerR1 = current * current * r1;
+            const powerR2 = current * current * r2;
+            const totalPower = powerR1 + powerR2;
+
+            let html = '<h3>Ergebnisse:</h3>';
+            html += `<div class="result-item"><span class="result-label">Ausgangsspannung V_out:</span><span class="result-value">${vout.toFixed(3)} V</span></div>`;
+            html += `<div class="result-item"><span class="result-label">Strom durch Teiler:</span><span class="result-value">${(current * 1000).toFixed(3)} mA</span></div>`;
+            html += `<div class="result-item"><span class="result-label">Leistung an R1:</span><span class="result-value">${powerR1.toFixed(3)} W</span></div>`;
+            html += `<div class="result-item"><span class="result-label">Leistung an R2:</span><span class="result-value">${powerR2.toFixed(3)} W</span></div>`;
+            html += `<div class="result-item"><span class="result-label">Gesamtleistung:</span><span class="result-value">${totalPower.toFixed(3)} W</span></div>`;
+
+            if (powerR1 > 0.25 || powerR2 > 0.25) {
+                html += '<div class="warning">⚠️ Achtung: Leistung übersteigt typische 1/4W Widerstände! Verwende entsprechend belastbare Widerstände.</div>';
+            }
+
+            document.getElementById('vd-result').innerHTML = html;
+        }
+
+        function calculateCurrentDivider() {
+            const iin = parseFloat(document.getElementById('cd-iin').value) / 1000; // Convert to A
+            const r1 = parseFloat(document.getElementById('cd-r1').value);
+            const r2 = parseFloat(document.getElementById('cd-r2').value);
+
+            if (isNaN(iin) || isNaN(r1) || isNaN(r2) || r1 + r2 === 0) return;
+
+            const i1 = iin * (r2 / (r1 + r2));
+            const i2 = iin * (r1 / (r1 + r2));
+            const voltage = i1 * r1; // Same as i2 * r2
+            const powerR1 = i1 * i1 * r1;
+            const powerR2 = i2 * i2 * r2;
+
+            let html = '<h3>Ergebnisse:</h3>';
+            html += `<div class="result-item"><span class="result-label">Strom durch R1 (I1):</span><span class="result-value">${(i1 * 1000).toFixed(3)} mA</span></div>`;
+            html += `<div class="result-item"><span class="result-label">Strom durch R2 (I2):</span><span class="result-value">${(i2 * 1000).toFixed(3)} mA</span></div>`;
+            html += `<div class="result-item"><span class="result-label">Spannung über Widerständen:</span><span class="result-value">${voltage.toFixed(3)} V</span></div>`;
+            html += `<div class="result-item"><span class="result-label">Leistung an R1:</span><span class="result-value">${powerR1.toFixed(3)} W</span></div>`;
+            html += `<div class="result-item"><span class="result-label">Leistung an R2:</span><span class="result-value">${powerR2.toFixed(3)} W</span></div>`;
+
+            document.getElementById('cd-result').innerHTML = html;
+        }
+
+        function calculateLEDResistor() {
+            const vsupply = parseFloat(document.getElementById('led-vsupply').value);
+            const vled = parseFloat(document.getElementById('led-vled').value);
+            const current = parseFloat(document.getElementById('led-current').value) / 1000; // Convert to A
+
+            if (isNaN(vsupply) || isNaN(vled) || isNaN(current) || current === 0) return;
+
+            const resistance = (vsupply - vled) / current;
+            const power = resistance * current * current;
+
+            // Find nearest E12 series resistor values
+            const e12 = [10, 12, 15, 18, 22, 27, 33, 39, 47, 56, 68, 82];
+            let nearestResistor = 0;
+            let multiplier = 1;
+
+            while (nearestResistor < resistance) {
+                for (let val of e12) {
+                    if (val * multiplier >= resistance) {
+                        nearestResistor = val * multiplier;
+                        break;
+                    }
+                }
+                if (nearestResistor < resistance) multiplier *= 10;
+            }
+
+            const actualCurrent = (vsupply - vled) / nearestResistor;
+            const actualPower = nearestResistor * actualCurrent * actualCurrent;
+
+            let html = '<h3>Ergebnisse:</h3>';
+            html += `<div class="result-item"><span class="result-label">Berechneter Widerstand:</span><span class="result-value">${resistance.toFixed(2)} Ω</span></div>`;
+            html += `<div class="result-item"><span class="result-label">Nächster Standardwert (E12):</span><span class="result-value">${nearestResistor} Ω</span></div>`;
+            html += `<div class="result-item"><span class="result-label">Tatsächlicher Strom:</span><span class="result-value">${(actualCurrent * 1000).toFixed(2)} mA</span></div>`;
+            html += `<div class="result-item"><span class="result-label">Leistung am Widerstand:</span><span class="result-value">${actualPower.toFixed(3)} W</span></div>`;
+
+            let recommendedPower = '1/4W (0.25W)';
+            if (actualPower > 0.25) recommendedPower = '1/2W (0.5W)';
+            if (actualPower > 0.5) recommendedPower = '1W';
+            if (actualPower > 1) recommendedPower = '2W';
+            if (actualPower > 2) recommendedPower = '5W oder höher';
+
+            html += `<div class="result-item"><span class="result-label">Empfohlene Belastbarkeit:</span><span class="result-value">${recommendedPower}</span></div>`;
+
+            if (vsupply <= vled) {
+                html += '<div class="warning">⚠️ Achtung: Versorgungsspannung ist zu niedrig für diese LED!</div>';
+            } else if (actualPower > 0.5) {
+                html += '<div class="warning">⚠️ Achtung: Hohe Leistung am Widerstand! Prüfe die Belastbarkeit.</div>';
+            }
+
+            document.getElementById('led-result').innerHTML = html;
+        }
+
+        function setLEDPreset() {
+            const ledType = document.getElementById('led-type').value;
+            const presets = {
+                'red': { vled: 2.0, current: 20 },
+                'green': { vled: 2.1, current: 20 },
+                'blue': { vled: 3.2, current: 20 },
+                'white': { vled: 3.2, current: 20 },
+                'yellow': { vled: 2.1, current: 20 },
+                'infrared': { vled: 1.5, current: 20 }
+            };
+
+            if (presets[ledType]) {
+                document.getElementById('led-vled').value = presets[ledType].vled;
+                document.getElementById('led-current').value = presets[ledType].current;
+                calculateLEDResistor();
+            }
+        }
+
+        // Initial calculation
+        calculateVoltageDivider();
+    </script>
+</body>
+</html>

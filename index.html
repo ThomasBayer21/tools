@@ -11,7 +11,7 @@
             max-width: 900px;
             margin: 40px auto;
             padding: 20px;
-            background: linear-gradient(135deg, #e4e4ec 0%, #d0d0dc 100%);
+            background: linear-gradient(135deg, rgba(106, 177, 141, 0.08) 0%, rgba(106, 160, 177, 0.08) 100%);
             min-height: 100vh;
         }
         h1 {
@@ -51,7 +51,7 @@
             padding: 25px;
             border-radius: 6px;
             border-left: 4px solid #3498db;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
             text-decoration: none;
             color: inherit;
             display: block;
@@ -61,22 +61,32 @@
             box-shadow: 0 3px 8px rgba(0,0,0,0.15);
         }
         .viz-card.systems {
-            border-left-color: #d4c8b8;
+            border-left-color: #6ab18d;
+            background: linear-gradient(135deg, #fafafa 0%, rgba(106, 177, 141, 0.1) 100%);
+        }
+        .viz-card.systems:hover {
+            background: linear-gradient(135deg, #fafafa 0%, rgba(106, 177, 141, 0.15) 100%);
         }
         .viz-card.elementary {
-            border-left-color: #c4d8bc;
+            border-left-color: #6ab19e;
+            background: linear-gradient(135deg, #fafafa 0%, rgba(106, 177, 158, 0.1) 100%);
+        }
+        .viz-card.elementary:hover {
+            background: linear-gradient(135deg, #fafafa 0%, rgba(106, 177, 158, 0.15) 100%);
         }
         .viz-card.decibel {
-            border-left-color: #e0c8b8;
+            border-left-color: #6ab1b0;
+            background: linear-gradient(135deg, #fafafa 0%, rgba(106, 177, 176, 0.1) 100%);
+        }
+        .viz-card.decibel:hover {
+            background: linear-gradient(135deg, #fafafa 0%, rgba(106, 177, 176, 0.15) 100%);
         }
         .viz-card.frequency {
-            border-left-color: #d4cce0;
+            border-left-color: #6aa0b1;
+            background: linear-gradient(135deg, #fafafa 0%, rgba(106, 160, 177, 0.1) 100%);
         }
-        .viz-card.operations {
-            border-left-color: #bcd8d4;
-        }
-        .viz-card.dsp {
-            border-left-color: #bcd4d4;
+        .viz-card.frequency:hover {
+            background: linear-gradient(135deg, #fafafa 0%, rgba(106, 160, 177, 0.15) 100%);
         }
         .viz-title {
             font-size: 1.3em;
@@ -115,12 +125,38 @@
 
         <div class="visualizations">
             <a href="pwm_calculator.html" class="viz-card systems">
-                <div class="viz-title">PWM</div>
+                <div class="viz-title">PWM Calculator</div>
                 <div class="viz-subtitle">Eigenschaften von PWM</div>
                 <div class="viz-description">
                     Zum berechnen der PWM Timings für bestimmten Duty-Cycle und Frequenz
                 </div>
-                <div class="viz-count">1 Tool</div>
+            </a>
+
+            <a href="resistor_color_code.html" class="viz-card elementary">
+                <div class="viz-title">Widerstandsfarbcode</div>
+                <div class="viz-subtitle">Farbcode Decoder & Encoder</div>
+                <div class="viz-description">
+                    Entschlüssle Widerstandsfarbcodes oder finde die passenden Farben für einen Widerstandswert.
+                    Unterstützt 4-Band und 5-Band Widerstände.
+                </div>
+            </a>
+
+            <a href="voltage_current_calculator.html" class="viz-card decibel">
+                <div class="viz-title">Spannungs- & Stromteiler</div>
+                <div class="viz-subtitle">Teiler & Vorwiderstände</div>
+                <div class="viz-description">
+                    Berechne Spannungsteiler, Stromteiler und LED-Vorwiderstände mit visuellen Schaltplänen
+                    und detaillierten Leistungsberechnungen.
+                </div>
+            </a>
+
+            <a href="color_palette_generator.html" class="viz-card frequency">
+                <div class="viz-title">Farbpaletten Generator</div>
+                <div class="viz-subtitle">Harmonische Farbschemata</div>
+                <div class="viz-description">
+                    Erstelle professionelle Farbpaletten mit verschiedenen Harmonien (monochromatisch, komplementär, triadisch).
+                    Mit Kontrast-Checker und Export-Funktionen.
+                </div>
             </a>
         </div>
     </div>
